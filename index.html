@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memoirs of Disappearing Earth</title>
+  <meta name="description" content="A ritual instrument translating the electrical relationship between human bodies and threatened landscapes into live sonic cartographies." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400&family=Plus+Jakarta+Sans:wght@400;500&family=Space+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { background: none; border: none; cursor: pointer; font: inherit; color: inherit; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      width: 100vw; height: 100vh;
+      min-height: 600px; overflow: hidden;
+    }
+
+    /* Marble — full, warm, present. No overlay. */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('assets/images/hero-marble.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: saturate(0.78) brightness(0.06);
+    }
+
+    /* Canvas sits directly on marble */
+    .hero-canvas {
+      position: absolute; inset: 0; z-index: 1;
+      width: 100%; height: 100%;
+    }
+
+    /* All UI floats on top */
+    .hero-ui {
+      position: absolute; inset: 0; z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 4rem;
+      display: flex; align-items: center;
+      padding: 0 2.5rem;
+      justify-content: space-between;
+      transition: background 0.5s ease, backdrop-filter 0.5s ease;
+    }
+    .nav.scrolled {
+      background: rgba(255,252,248,0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(180,140,120,0.15);
+    }
+    .nav-word {
+      font-family: 'Space Mono', monospace;
+      font-size: 8.5px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(255,255,255,0.65);
+    }
+    .nav.scrolled .nav-word { color: rgba(80,60,50,0.6); }
+    .nav-links { display: flex; gap: 2.8rem; }
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 8.5px; letter-spacing: 0.13em;
+      text-transform: uppercase; color: rgba(255,255,255,0.65);
+      transition: color 0.25s;
+      position: relative;
+    }
+    .nav.scrolled .nav-links a { color: rgba(80,60,50,0.6); }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: currentColor;
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a:hover { color: rgba(255,255,255,1); }
+    .nav.scrolled .nav-links a:hover { color: rgba(80,60,50,1); }
+    .nav-status {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 8.5px; letter-spacing: 0.13em;
+      text-transform: uppercase; color: rgba(255,255,255,0.55);
+    }
+    .nav.scrolled .nav-status { color: rgba(80,60,50,0.5); }
+    .live-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(255,255,255,0.7); display: inline-block;
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .nav.scrolled .live-dot { background: rgba(160,100,80,0.8); }
+
+    /* ── CORNER LABELS ── */
+    .corner {
+      position: absolute;
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.52);
+      line-height: 2.1;
+      pointer-events: none;
+    }
+    .corner-tl { top: 5.5rem; left: 2.5rem; }
+    .corner-tr { top: 5.5rem; right: 2.5rem; text-align: right; }
+    .corner-bl { bottom: 2.2rem; left: 2.5rem; }
+    .corner-br { bottom: 2.2rem; right: 2.5rem; text-align: right; }
+    .dim { opacity: 0.6; }
+
+    /* ── HERO CENTER ── */
+    .hero-center {
+      position: absolute; z-index: 3;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(88vw, 820px);
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 1.6rem;
+      pointer-events: auto;
+    }
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+      font-weight: 200; line-height: 1.2;
+      letter-spacing: 0.02em; color: #f8f6f1;
+      white-space: nowrap;
+    }
+    .hero-title em {
+      font-style: italic; font-weight: 300;
+      color: rgba(255,255,255,0.88);
+    }
+    .hero-stmt {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(0.72rem, 1.05vw, 0.88rem);
+      color: rgba(255,255,255,0.62);
+      line-height: 1.95; max-width: 42ch;
+      letter-spacing: 0.01em; text-align: left;
+    }
+
+    /* ── AUDIO BUTTON ── */
+    .audio-btn {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.65rem 1.5rem;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.88);
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: 0.16em;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      margin-top: 0.3rem;
+    }
+    .audio-btn:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.9);
+      color: #fff;
+    }
+    .audio-btn.is-on {
+      background: rgba(255,255,255,0.18);
+      border-color: #fff;
+    }
+    .waves { display: flex; align-items: center; gap: 2.5px; height: 13px; }
+    .waves span {
+      display: block; width: 1.8px; border-radius: 1px;
+      background: rgba(255,255,255,0.85); height: 3px;
+      transition: height 0.3s ease;
+    }
+    .audio-hint {
+      font-family: 'Space Mono', monospace;
+      font-size: 7.5px; color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── SCROLL HINT ── */
+    .scroll-hint {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%); z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      animation: scrollBounce 2.2s ease-in-out infinite;
+    }
+    .scroll-hint span {
+      font-family: 'Space Mono', monospace;
+      font-size: 7px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+    }
+
+    /* ── ARCHIVE SECTION ── */
+    .archive {
+      background: #FDFAF7;
+      padding: 7rem 0;
+      border-top: 1px solid rgba(180,140,120,0.15);
+    }
+    .container {
+      width: 100%; max-width: 1400px;
+      margin-inline: auto;
+      padding-inline: clamp(1.5rem, 4vw, 4rem);
+    }
+    .archive-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(180,140,120,0.18);
+      margin-bottom: 3.5rem;
+    }
+    .eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(160,100,80,0.8);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.8rem);
+      font-weight: 300; line-height: 1.1;
+      letter-spacing: -0.01em; color: #2A1F1A;
+    }
+    .archive-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; color: rgba(80,60,50,0.3);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── CARD ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr));
+      gap: 1px;
+      background: rgba(180,140,120,0.12);
+      border: 1px solid rgba(180,140,120,0.12);
+    }
+    .card {
+      background: #FDFAF7; padding: 2.5rem;
+      display: flex; flex-direction: column; gap: 1.5rem;
+      transition: background 0.3s ease;
+    }
+    .card:hover { background: #F8F3EE; }
+    .card-media {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden; background: #EDE8E2;
+    }
+    .card-media img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: saturate(0.6);
+      transition: filter 0.6s ease, transform 0.6s ease;
+    }
+    .card:hover .card-media img { filter: saturate(0.85); transform: scale(1.02); }
+    .card-meta {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-index {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; color: rgba(80,60,50,0.3);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      border: 1px solid rgba(180,140,120,0.25);
+      font-family: 'Space Mono', monospace;
+      font-size: 7.5px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(80,60,50,0.45);
+    }
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem; font-weight: 300;
+      line-height: 1.2; color: #2A1F1A;
+    }
+    .card-desc {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem; color: rgba(60,40,30,0.55);
+      line-height: 1.75;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto; padding-top: 1rem;
+      border-top: 1px solid rgba(180,140,120,0.12);
+    }
+    .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .card-cta {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(160,100,80,0.8);
+      transition: letter-spacing 0.25s ease;
+    }
+    .card:hover .card-cta { letter-spacing: 0.16em; }
+
+    /* ── STATEMENT ── */
+    .statement-section {
+      background: #F5EFE8;
+      padding: 8rem 0;
+      border-top: 1px solid rgba(180,140,120,0.15);
+    }
+    .statement-inner {
+      max-width: 860px; margin-inline: auto; text-align: center;
+    }
+    .pull-quote {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.3rem, 2.8vw, 2rem);
+      font-weight: 200; line-height: 1.55;
+      letter-spacing: -0.01em; color: #2A1F1A;
+    }
+    .rule-accent {
+      width: 2.5rem; height: 1px;
+      background: rgba(160,100,80,0.4);
+      border: none; margin: 2.5rem auto;
+    }
+    .caption {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(80,60,50,0.35);
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #F5EFE8;
+      border-top: 1px solid rgba(180,140,120,0.15);
+      padding: 2rem 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: 0.1em;
+      color: rgba(80,60,50,0.32);
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    @keyframes wvanim { 0%,100%{height:3px} 50%{height:12px} }
+    @keyframes scrollBounce {
+      0%,100%{ transform:translateX(-50%) translateY(0); opacity:0.5; }
+      50%{ transform:translateX(-50%) translateY(5px); opacity:1; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      .nav-links { display: none; }
+      .corner-tr, .corner-br { display: none; }
+      .hero-center { width: 90vw; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav" id="nav">
+    <span class="nav-word">M.O.D.E — Research Archive</span>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Field</a></li>
+      <li><a href="work.html">Archive</a></li>
+      <li><a href="about.html">Authors</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-status">
+      <span class="live-dot"></span>
+      Archive — Open
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" aria-label="Landing">
+
+    <!-- Marble background — full and present -->
+    <div class="hero-bg" aria-hidden="true">
+      <video autoplay muted loop playsinline preload="metadata" poster="assets/images/hero-marble.jpg">
+        <source src="assets/videos/denemebg-2.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- Generative ancient symbol canvas -->
+    <canvas class="hero-canvas" id="canvas" aria-hidden="true"></canvas>
+
+    <!-- UI layer -->
+    <div class="hero-ui">
+
+      <div class="corner corner-tl">
+        <div>Lat — 41.347200</div>
+        <div>Lng — 2.070000</div>
+        <div class="dim" style="margin-top:0.5rem">Llobregat River</div>
+        <div class="dim">Barcelona, ES</div>
+      </div>
+      <div class="corner corner-tr">
+        <div>Sensor — 4ch Active</div>
+        <div>Protocol — BLE MIDI</div>
+        <div class="dim" style="margin-top:0.5rem">Device — Barduino 4.0.2</div>
+        <div class="dim">MCU — ESP32-S3</div>
+      </div>
+      <div class="corner corner-bl">
+        <div>Material — Stone · Sand · Water</div>
+      </div>
+      <div class="corner corner-br">
+        <div>Archive — 01 Active</div>
+        <div>Status — Field Research</div>
+      </div>
+
+      <!-- Central content -->
+      <div class="hero-center">
+        <h1 class="hero-title">
+          Memoirs of<br>
+          <em>Disappearing Earth</em>
+        </h1>
+        <p class="hero-stmt">
+          A rerouted riverbed, a forest under construction,
+          a field of clay turning to concrete. 
+          Landscapes in the midst of transition.
+
+        </p>
+        <button class="audio-btn" id="audio-btn" aria-pressed="false">
+          <div class="waves" id="wave-l" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+          Attune to Environment
+          <div class="waves" id="wave-r" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+          </div>
+        </button>
+        <span class="audio-hint">[ Click for Sound Synthesis — Silent by Default ]</span>
+      </div>
+
+    </div>
+
+    <!-- Hidden audio -->
+    <audio id="synth-audio" loop src="assets/audio/synth.mp3" preload="none"></audio>
+
+  </section>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint" id="scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
+    <svg width="10" height="14" viewBox="0 0 10 14" fill="none">
+      <path d="M5 1L5 13M1 9L5 13L9 9"
+        stroke="rgba(255,255,255,0.45)" stroke-width="1" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- ═══ ARCHIVE ═══ -->
+  <section class="archive" aria-label="Project archive">
+    <div class="container">
+
+      <div class="archive-header reveal">
+        <div>
+          <p class="eyebrow">Research Archive</p>
+          <h2 class="section-title">Field Archive</h2>
+        </div>
+        <span class="archive-count">01 / 01</span>
+      </div>
+
+      <div class="card-grid reveal">
+        <article class="card">
+          <div class="card-media">
+            <img
+              src="assets/images/web-01.jpg"
+              alt="Capacitive ritual instrument with natural materials — Llobregat River field session"
+              loading="lazy"
+              onerror="this.parentElement.style.background='#EDE8E2'"
+            />
+          </div>
+          <div class="card-meta">
+            <span class="card-index">Archive — 001</span>
+            <span class="badge">2024 — 2025</span>
+          </div>
+          <h3 class="card-title">Memoirs of Disappearing Earth</h3>
+          <p class="card-desc">
+            A ritual instrument reading the electrical relationship between
+            human bodies and threatened terrain. Live capacitance data from
+            wounded landscapes translated into sonic cartographies that
+            cannot be repeated.
+          </p>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="badge">Capacitive Sensing</span>
+              <span class="badge">BLE MIDI</span>
+              <span class="badge">Sound Synthesis</span>
+            </div>
+            <a href="work.html" class="card-cta">Open Dossier →</a>
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ STATEMENT ═══ -->
+  <section class="statement-section" aria-label="Field testimony">
+    <div class="container">
+      <div class="statement-inner reveal">
+        <p class="eyebrow" style="margin-bottom:2rem;">Field Testimony</p>
+        <blockquote class="pull-quote">
+          We treat the Earth as an abstracted void, forgetting that its
+          material residue is the very fabric of our being. A rerouted
+          riverbed, a forest under construction, a field of clay turning
+          to concrete. Landscapes in the midst of transition.
+        </blockquote>
+        <hr class="rule-accent" />
+        <p class="caption">Memoirs of Disappearing Earth — MDEF Thesis, 2025</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 — M.O.D.E Research Archive — IAAC / MDEF</span>
+        <span class="footer-copy">41.347200 N, 2.070000 E</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
