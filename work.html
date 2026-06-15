@@ -157,21 +157,34 @@
       background: rgba(42,31,26,0);
       transition: background 0.3s ease;
     }
-    .material-card:hover .material-play { background: rgba(42,31,26,0.12); }
-    .material-play svg { opacity: 0; transition: opacity 0.3s; }
-    .material-card:hover .material-play svg { opacity: 1; }
+    .material-card:hover .material-play { background: rgba(42,31,26,0.18); }
+    /* Icons always visible, just dimmer when not hovering */
+    .material-play svg {
+      opacity: 0.5;
+      transition: opacity 0.3s, transform 0.3s;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+    }
+    .material-card:hover .material-play svg { opacity: 1; transform: scale(1.08); }
+    /* Playing state — icon fully visible, accent border */
+    .material-card.playing .material-play { background: rgba(42,31,26,0.1); }
+    .material-card.playing .material-play svg { opacity: 1; }
+    .material-card.playing .material-img {
+      outline: 2px solid rgba(160,110,80,0.55);
+      outline-offset: -2px;
+    }
     .material-name {
       font-family: 'Space Mono', monospace; font-size: 8px;
       letter-spacing: 0.12em; text-transform: uppercase;
       color: rgba(60,45,35,0.55);
+      transition: color 0.25s;
     }
+    .material-card.playing .material-name { color: rgba(160,110,80,0.9); }
     .material-status {
       font-family: 'Space Mono', monospace; font-size: 7px;
       letter-spacing: 0.1em; color: rgba(160,110,80,0.6);
+      transition: color 0.25s;
     }
-    /* Playing state */
-    .material-card.playing .material-name { color: rgba(160,110,80,0.9); }
-    .material-card.playing .material-img { outline: 1px solid rgba(160,110,80,0.4); }
+    .material-card.playing .material-status { color: rgba(160,110,80,0.9); }
 
     /* Hidden audio elements for each material */
     audio.material-audio { display: none; }
@@ -283,43 +296,64 @@
         <div class="materials-grid">
 
           <!-- STONE -->
-          <div class="material-card" id="material-rock" data-audio="assets/audio/material-rock.wav">
+          <div class="material-card" id="mat-stone" data-audio="stone">
             <div class="material-img">
-              <img src="assets/images/rock.jpg" alt="Stone from Llobregat River" onerror="this.parentElement.style.background='#C8BFB2'" />
+              <img src="assets/images/material-stone.jpg" alt="Stone from Llobregat River" onerror="this.parentElement.style.background='#C8BFB2'" />
               <div class="material-play">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <circle cx="16" cy="16" r="15" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
-                  <path d="M13 11L22 16L13 21V11Z" fill="rgba(255,255,255,0.9)"/>
+                <!-- Play icon (shown when stopped) -->
+                <svg class="icon-play" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                  <path d="M16 13L28 20L16 27V13Z" fill="rgba(255,255,255,0.95)"/>
+                </svg>
+                <!-- Stop icon (shown when playing) -->
+                <svg class="icon-stop" width="40" height="40" viewBox="0 0 40 40" fill="none" style="display:none">
+                  <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                  <rect x="13" y="13" width="5" height="14" fill="rgba(255,255,255,0.95)" rx="1"/>
+                  <rect x="22" y="13" width="5" height="14" fill="rgba(255,255,255,0.95)" rx="1"/>
                 </svg>
               </div>
             </div>
-            <span class="material-name">Rock</span>
-            <span class="material-status" id="status-rock">— touch to hear</span>
+            <span class="material-name">Stone</span>
+            <span class="material-status" id="status-stone">— touch to hear</span>
           </div>
 
-          <!-- CLAY -->
-          <div class="material-card" id="mat-clay" data-audio="assets/audio/material-soil.wav">
+          <!-- SAND -->
+          <div class="material-card" id="mat-clay" data-audio="clay">
             <div class="material-img">
               <img src="assets/images/clay.jpg" alt="Clay from Llobregat Delta" onerror="this.parentElement.style.background='#D4C9A8'" />
               <div class="material-play">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <circle cx="16" cy="16" r="15" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
-                  <path d="M13 11L22 16L13 21V11Z" fill="rgba(255,255,255,0.9)"/>
+                <!-- Play icon (shown when stopped) -->
+                <svg class="icon-play" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                  <path d="M16 13L28 20L16 27V13Z" fill="rgba(255,255,255,0.95)"/>
+                </svg>
+                <!-- Stop icon (shown when playing) -->
+                <svg class="icon-stop" width="40" height="40" viewBox="0 0 40 40" fill="none" style="display:none">
+                  <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                  <rect x="13" y="13" width="5" height="14" fill="rgba(255,255,255,0.95)" rx="1"/>
+                  <rect x="22" y="13" width="5" height="14" fill="rgba(255,255,255,0.95)" rx="1"/>
                 </svg>
               </div>
             </div>
-            <span class="material-name">Clay</span>
-            <span class="material-status" id="status-clay">— touch to hear</span>
+            <span class="material-name">Sand</span>
+            <span class="material-status" id="status-sand">— touch to hear</span>
           </div>
 
           <!-- WATER -->
-          <div class="material-card" id="mat-water" data-audio="assets/audio/material-water.wav">
+          <div class="material-card" id="mat-water" data-audio="water">
             <div class="material-img">
-              <img src="assets/images/water.jpg" alt="Water from Llobregat River" onerror="this.parentElement.style.background='#A8B8C4'" />
+              <img src="assets/images/material-water.jpg" alt="Water from Llobregat River" onerror="this.parentElement.style.background='#A8B8C4'" />
               <div class="material-play">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <circle cx="16" cy="16" r="15" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
-                  <path d="M13 11L22 16L13 21V11Z" fill="rgba(255,255,255,0.9)"/>
+                <!-- Play icon (shown when stopped) -->
+                <svg class="icon-play" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                  <path d="M16 13L28 20L16 27V13Z" fill="rgba(255,255,255,0.95)"/>
+                </svg>
+                <!-- Stop icon (shown when playing) -->
+                <svg class="icon-stop" width="40" height="40" viewBox="0 0 40 40" fill="none" style="display:none">
+                  <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                  <rect x="13" y="13" width="5" height="14" fill="rgba(255,255,255,0.95)" rx="1"/>
+                  <rect x="22" y="13" width="5" height="14" fill="rgba(255,255,255,0.95)" rx="1"/>
                 </svg>
               </div>
             </div>
@@ -373,49 +407,97 @@
   </footer>
 
   <!-- Material audio elements (add files to assets/audio/) -->
-  <audio id="audio-rock" loop src="assets/audio/material-rock.wav" preload="none"></audio>
-  <audio id="audio-clay"  loop src="assets/audio/material-soil.wav"  preload="none"></audio>
-  <audio id="audio-water" loop src="assets/audio/material-water.wav" preload="none"></audio>
+  <audio id="audio-stone" loop src="assets/audio/stone.wav" preload="none"></audio>
+  <audio id="audio-clay"  loop src="assets/audio/sand.wav"  preload="none"></audio>
+  <audio id="audio-water" loop src="assets/audio/water.wav" preload="none"></audio>
 
   <script>
-    /* ── NAV ── */
-    const nav = document.querySelector('.nav');
+    /* ── MATERIAL SOUND SYSTEM ──────────────────────────────────
+       Each material card toggles its own audio independently.
+       Click once to play. Click again to stop.
+       Only one sound plays at a time — starting a new one
+       automatically stops the previous.
+    ── */
 
-    /* ── MATERIAL SOUND TOGGLE ── */
-    const materials = [
-      { card: 'mat-stone', audio: 'audio-stone', status: 'status-stone' },
-      { card: 'mat-sand',  audio: 'audio-sand',  status: 'status-sand'  },
-      { card: 'mat-water', audio: 'audio-water', status: 'status-water' },
+    const MATERIALS = [
+      { id: 'stone', label: 'Stone' },
+      { id: 'clay',  label: 'Clay'  },
+      { id: 'water', label: 'Water' },
     ];
 
-    let currentPlaying = null;
+    /* Preload all audio on first user interaction */
+    let preloaded = false;
+    function preloadAll() {
+      if (preloaded) return;
+      preloaded = true;
+      MATERIALS.forEach(({ id }) => {
+        const a = document.getElementById('audio-' + id);
+        if (a) { a.load(); }
+      });
+    }
+    document.addEventListener('click', preloadAll, { once: true });
 
-    materials.forEach(({ card, audio, status }) => {
-      const cardEl   = document.getElementById(card);
-      const audioEl  = document.getElementById(audio);
-      const statusEl = document.getElementById(status);
-      if (!cardEl || !audioEl) return;
+    function stopAll() {
+      MATERIALS.forEach(({ id }) => {
+        const card    = document.getElementById('mat-' + id);
+        const audio   = document.getElementById('audio-' + id);
+        const status  = document.getElementById('status-' + id);
+        const iconPlay = card?.querySelector('.icon-play');
+        const iconStop = card?.querySelector('.icon-stop');
 
-      cardEl.addEventListener('click', () => {
-        const isPlaying = cardEl.classList.contains('playing');
+        card?.classList.remove('playing');
+        if (audio) { audio.pause(); audio.currentTime = 0; }
+        if (status) status.textContent = '— click to hear';
+        if (iconPlay) iconPlay.style.display = '';
+        if (iconStop) iconStop.style.display = 'none';
+      });
+    }
 
-        /* Stop all */
-        materials.forEach(({ card: c, audio: a, status: s }) => {
-          document.getElementById(c)?.classList.remove('playing');
-          document.getElementById(a)?.pause();
-          if (document.getElementById(a)) document.getElementById(a).currentTime = 0;
-          const st = document.getElementById(s);
-          if (st) st.textContent = '— touch to hear';
-        });
+    MATERIALS.forEach(({ id, label }) => {
+      const card    = document.getElementById('mat-' + id);
+      const audio   = document.getElementById('audio-' + id);
+      const status  = document.getElementById('status-' + id);
+      if (!card || !audio) return;
 
-        /* If wasn't playing, start this one */
+      /* Set initial status text */
+      if (status) status.textContent = '— click to hear';
+
+      card.addEventListener('click', () => {
+        const isPlaying = card.classList.contains('playing');
+
+        /* Always stop everything first */
+        stopAll();
+
         if (!isPlaying) {
-          cardEl.classList.add('playing');
-          statusEl.textContent = '— listening';
-          audioEl.play().catch(() => {
-            statusEl.textContent = '— sound file not yet added';
-          });
+          /* Start this one */
+          audio.load(); /* ensure loaded */
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              /* Successfully playing */
+              card.classList.add('playing');
+              if (status) status.textContent = '— playing · click to stop';
+              const iconPlay = card.querySelector('.icon-play');
+              const iconStop = card.querySelector('.icon-stop');
+              if (iconPlay) iconPlay.style.display = 'none';
+              if (iconStop) iconStop.style.display = '';
+            }).catch((err) => {
+              if (status) status.textContent = '— audio file not found';
+              console.warn('Audio play failed:', err);
+            });
+          }
         }
+        /* If it WAS playing, stopAll() already handled it */
+      });
+
+      /* When audio ends naturally (non-loop case) */
+      audio.addEventListener('ended', () => {
+        card.classList.remove('playing');
+        if (status) status.textContent = '— click to hear';
+        const iconPlay = card.querySelector('.icon-play');
+        const iconStop = card.querySelector('.icon-stop');
+        if (iconPlay) iconPlay.style.display = '';
+        if (iconStop) iconStop.style.display = 'none';
       });
     });
 
