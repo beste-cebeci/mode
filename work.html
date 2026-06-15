@@ -283,7 +283,7 @@
         <div class="materials-grid">
 
           <!-- STONE -->
-          <div class="material-card" id="mat-stone" data-audio="assets/audio/material-rock.wav">
+          <div class="material-card" id="material-rock" data-audio="assets/audio/material-rock.wav">
             <div class="material-img">
               <img src="assets/images/rock.jpg" alt="Stone from Llobregat River" onerror="this.parentElement.style.background='#C8BFB2'" />
               <div class="material-play">
@@ -293,14 +293,14 @@
                 </svg>
               </div>
             </div>
-            <span class="material-name">Stone</span>
-            <span class="material-status" id="status-stone">— touch to hear</span>
+            <span class="material-name">Rock</span>
+            <span class="material-status" id="status-rock">— touch to hear</span>
           </div>
 
-          <!-- SAND -->
-          <div class="material-card" id="mat-sand" data-audio="assets/audio/material-soil.wav">
+          <!-- CLAY -->
+          <div class="material-card" id="mat-clay" data-audio="assets/audio/material-soil.wav">
             <div class="material-img">
-              <img src="assets/images/clay.jpg" alt="Sand from Llobregat Delta" onerror="this.parentElement.style.background='#D4C9A8'" />
+              <img src="assets/images/clay.jpg" alt="Clay from Llobregat Delta" onerror="this.parentElement.style.background='#D4C9A8'" />
               <div class="material-play">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                   <circle cx="16" cy="16" r="15" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
@@ -308,8 +308,8 @@
                 </svg>
               </div>
             </div>
-            <span class="material-name">Sand</span>
-            <span class="material-status" id="status-sand">— touch to hear</span>
+            <span class="material-name">Clay</span>
+            <span class="material-status" id="status-clay">— touch to hear</span>
           </div>
 
           <!-- WATER -->
@@ -373,9 +373,9 @@
   </footer>
 
   <!-- Material audio elements (add files to assets/audio/) -->
-  <audio id="audio-stone" loop src="assets/audio/stone.mp3" preload="none"></audio>
-  <audio id="audio-sand"  loop src="assets/audio/sand.mp3"  preload="none"></audio>
-  <audio id="audio-water" loop src="assets/audio/water.mp3" preload="none"></audio>
+  <audio id="audio-rock" loop src="assets/audio/material-rock.wav" preload="none"></audio>
+  <audio id="audio-clay"  loop src="assets/audio/material-soil.wav"  preload="none"></audio>
+  <audio id="audio-water" loop src="assets/audio/material-water.wav" preload="none"></audio>
 
   <script>
     /* ── NAV ── */
