@@ -156,11 +156,14 @@
       padding: 5rem 0; position: relative; overflow: hidden;
     }
     .video-wrap {
-      width: min(860px, 88vw); position: relative;
+      width: min(860px, 88vw);
+      position: relative;
+      aspect-ratio: 16 / 9;
     }
-    .video-wrap video {
-      width: 100%; display: block;
-      filter: saturate(0.7);
+    .video-wrap iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: none;
     }
     .video-label {
       position: absolute; bottom: 1rem; left: 1rem;
@@ -318,16 +321,14 @@
   <!-- VIDEO -->
   <section class="video-section" aria-label="Project trailer">
     <div class="video-wrap reveal">
-      <!--
-        PLACEHOLDER: replace src with your actual video file.
-        Drop it into assets/video/trailer.mp4
-        Keep under 30MB for fast loading.
-      -->
-      <video
-        autoplay muted loop playsinline
-        src="assets/video/trailer.mp4"
-        aria-label="Memoirs of Disappearing Earth — field session trailer"
-      ></video>
+      <iframe
+        title="Memoirs of Disappearing Earth — Field Session"
+        src="https://player.vimeo.com/video/1201435404?h=9d8a4d50a5&autoplay=1&muted=1&loop=1&background=1"
+        frameborder="0"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+        allowfullscreen
+      ></iframe>
       <span class="video-label">Field Session — Llobregat River, 2025</span>
     </div>
   </section>
