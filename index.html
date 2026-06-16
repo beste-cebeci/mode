@@ -63,6 +63,17 @@
       background-size: cover; background-position: center;
       filter: saturate(0.78) brightness(1.06);
     }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(20, 18, 14, 0.6) 0%,
+        rgba(20, 18, 14, 0.4) 45%,
+        rgba(20, 18, 14, 0.68) 100%
+      );
+    }
     .hero-canvas {
       position: absolute; inset: 0; z-index: 1;
       width: 100%; height: 100%;
@@ -160,7 +171,6 @@
       position: relative;
       aspect-ratio: 16 / 9;
     }
-
     .video-wrap iframe {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
@@ -233,7 +243,7 @@
     }
     .footer-copy {
       font-family: 'Space Mono', monospace; font-size: 7.5px;
-      letter-spacing: 0.1em; color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1; color: rgba(255,255,255,0.3);
     }
 
     /* ── REVEAL ── */
@@ -260,7 +270,6 @@
 </head>
 <body>
 
-  <!-- NAV -->
   <nav class="nav" id="nav">
     <a href="index.html" class="nav-wordmark">Memoirs of Disappearing Earth</a>
     <ul class="nav-links">
@@ -270,7 +279,6 @@
     </ul>
   </nav>
 
-  <!-- HERO -->
   <section class="hero" aria-label="Landing">
     <div class="hero-bg"></div>
     <canvas class="hero-canvas" id="canvas" aria-hidden="true"></canvas>
@@ -319,15 +327,8 @@
     </svg>
   </div>
 
-  <!-- VIDEO -->
   <section class="video-section" aria-label="Project trailer">
     <div class="video-wrap reveal">
-      <!--
-        Starts muted and autoplays. Visitor can unmute using
-        the Vimeo controls. Fullscreen via the native browser
-        fullscreen button inside the Vimeo player.
-        No background=1 — full video, full controls, full sound.
-      -->
       <iframe
         id="video-iframe"
         title="Memoirs of Disappearing Earth — Field Session"
@@ -341,7 +342,6 @@
     </div>
   </section>
 
-  <!-- LLOBREGAT TEASER -->
   <section class="teaser" aria-label="Llobregat activation">
     <div class="container">
       <div class="teaser-grid reveal">
@@ -358,10 +358,6 @@
           <a href="work.html" class="teaser-link">View Full Archive →</a>
         </div>
         <div class="teaser-images">
-          <!--
-            Drop your field images into assets/images/
-            named: web-01.jpg, web-02.jpg, web-03.jpg
-          -->
           <div class="teaser-img tall">
             <img src="assets/images/web-01.jpg" alt="Llobregat river terrain" onerror="this.parentElement.style.background='rgba(0,0,0,0.25)'" />
           </div>
@@ -376,7 +372,6 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="footer-inner">
@@ -388,32 +383,27 @@
 
   <script src="js/main.js"></script>
   <script>
-    /* ── VIDEO FULLSCREEN ── */
-    const expandBtn = document.getElementById('video-expand-btn');
-    const videoIframe = document.getElementById('video-bg');
-
-    if (expandBtn && videoIframe) {
-      expandBtn.addEventListener('click', () => {
-        /* Try native fullscreen API on the iframe */
-        const el = videoIframe;
-        if (el.requestFullscreen) {
-          el.requestFullscreen();
-        } else if (el.webkitRequestFullscreen) {
-          el.webkitRequestFullscreen();
-        } else if (el.mozRequestFullScreen) {
-          el.mozRequestFullScreen();
-        } else if (el.msRequestFullscreen) {
-          el.msRequestFullscreen();
+    /* ── REVEAL ANIMATION BACKUP ── */
+    // Ensures components become visible on scroll even if js/main.js is missing setup
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
         }
       });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
 
-      /* When fullscreen exits, iframe returns to normal */
-      document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement) {
-          /* back to ambient loop — nothing needed, iframe stays */
-        }
-      });
-    }
+    /* ── SCROLL NAV BACKUP ── */
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
   </script>
 </body>
 </html>
